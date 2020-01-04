@@ -51,6 +51,7 @@
                 <el-button size="small" type="primary" @click="submitHandler">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- /模态框 -->
     </div>
 </template>
 
