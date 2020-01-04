@@ -1,19 +1,19 @@
 <template>
     <div>
         <!--标签页-->
-        <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tabs v-model="activeName" @tab-click="handleClick" >
             <el-tab-pane label="所有订单" value="first"></el-tab-pane>
-            <el-tab-pane label="待支付" name="second"></el-tab-pane>
+            <el-tab-pane label="待支付" name="second" ></el-tab-pane>
             <el-tab-pane label="待派单" name="third"></el-tab-pane>
             <el-tab-pane label="待派单" name="fourth"></el-tab-pane>
-            <el-tab-pane label="待接单" name="fiveth"></el-tab-pane>
+            <el-tab-pane label="待接单" name="fivseth"></el-tab-pane>
             <el-tab-pane label="待服务" name="sixth"></el-tab-pane>
             <el-tab-pane label="待确认" name="seventh"></el-tab-pane>
             <el-tab-pane label="已完成" name="eightth"></el-tab-pane>
         </el-tabs>
          <!--标签页-->
           <!--表格-->
-        <el-table :data="orders">
+        <el-table :data="orders.list">
             <el-table-column prop="id" label="编号"></el-table-column>
             <el-table-column prop="orderTime" label="下单时间"></el-table-column>
             <el-table-column prop="total" label="总价"></el-table-column>
@@ -23,7 +23,7 @@
             <el-table-column prop="addressId" width="200" label="地址id"></el-table-column>
             <el-table-column label="操作">
                 <template v-slot="slot">
-                    <a href="" @click.prevent="toDeleteHandler(slot.row.id)">删除</a>
+                    <a href="" @click.prevent="toDeleteHandler(slot.row.id)">详情</a>
                     <a href="" @click.prevent="toUpdateHandler(slot.row)">修改</a>
 
                 </template>
@@ -34,7 +34,8 @@
          <!--分页开始-->
          <el-pagination
         layout="prev, pager, next"
-        :total="50">
+        :total="orders.total"
+        @current-change="pageChangeHandler">
          </el-pagination>
          <!--分页结束-->
          <!--模态框-->
@@ -75,10 +76,25 @@ import querystring from 'querystring'
 export default {
     //用于存放网页中需要存放的方法
     methods:{
+        pageChangeHandler(page){
+            this.params.page=page-1;
+            this.loadData();
+        },
+        handleClick(name) {
+        switch(name){
+            
+        }
+      },
         loadData(){
-             let url="http://localhost:6677/order/findAll"
-             request.get(url).then((response)=>{//指向外部this
-             //将查询结果设置到order
+             let url="http://localhost:6677/order/queryPage"
+            request({
+                  url,
+                  method:"POST",
+                  headers:{
+                   "Content-Type":"application/x-www-form-urlencoded"
+                    },
+                data:querystring.stringify(this.params)
+             } ).then((response)=>{
              this.orders=response.data;
              })
         },
@@ -104,13 +120,13 @@ export default {
     
         toDeleteHandler(id){
             //确认
-         this.$confirm('此操作将永久删除该条信息, 是否继续?', '提示', {
+         this.$confirm('此操作将查看该条信息, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
             //调用后台接口，完成删除操作
-            let url="http://localhost:6677/order/deleteById?id="+id;
+            let url="http://localhost:6677//order/getOrderLinesByOrderId?"+orderId;
             request.get(url).then((response)=>{
                 //1.刷新数据
                 this.loadData();
@@ -144,9 +160,13 @@ export default {
     data(){
         return{
             visible:false,
-            orders:[],
+            orders:{},
             form:{
-             type:"order+"
+             type:"orders"
+            },
+            params:{
+                page:0,
+                pageSize:10
             }
         }
     },
