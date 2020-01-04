@@ -44,6 +44,9 @@
                 <el-form-item label="手机号">
                     <el-input v-model="form.telephone"></el-input>
                 </el-form-item>
+                <el-form-item label="用户编号">
+                    <el-input v-model="form.customerId"></el-input>
+                </el-form-item>
             </el-form>
 
             <span slot="footer" class="dialog-footer">

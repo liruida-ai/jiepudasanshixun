@@ -38,9 +38,9 @@
                     <el-select v-model="form.categoryId" placeholder="请选择">
                         <el-option
                             v-for="item in options"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.label">
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -86,6 +86,12 @@ export default {
             let url ="http://localhost:6677/product/findAll";
             request.get(url).then((response)=>{
                 this.products = response.data;
+            })
+        },
+        loadCategry(){
+            let url ="http://localhost:6677/category/findAll";
+            request.get(url).then((response)=>{
+                this.options = response.data;
             })
         },
         submitHandler(){
@@ -146,22 +152,14 @@ export default {
             title:"录入栏目信息",
             visible:false,
             products:[],
+            options: [],
             form:{},
-            options: [{ value: '123', label: '9139'}, 
-            { value: '家具养护', label: '9202' }, 
-            { value: '洗护服务', label: '9358' }, 
-            { value: '生活急救箱', label: '9392' }, 
-            { value: 'yyy', label: '9411'},
-            { value: '水果慢羊羊', label: '9451' }, 
-            { value: 'wxj', label: '9476' }, 
-            { value: 'www', label: '9477' }, 
-            { value: '澳大利亚袋鼠', label: '9481' }, 
-            ],
             value: ''
         }
     },
     created(){
         this.loadData();
+        this.loadCategry();
     }
 }
 </script>
