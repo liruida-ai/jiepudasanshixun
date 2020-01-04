@@ -119,7 +119,7 @@ export default {
     },
     data(){
         return{
-            visible:true,
+            visible:false,
             addresses:[],
             form:{},
             title:"录入地址信息"

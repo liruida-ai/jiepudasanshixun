@@ -144,7 +144,7 @@ export default {
         return{
             fileList: [],
             title:"录入栏目信息",
-            visible:true,
+            visible:false,
             products:[],
             form:{},
             options: [{ value: '123', label: '9139'}, 
