@@ -9,11 +9,16 @@
         <el-table :data="products">
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="id" label="编号"></el-table-column>
-            <el-table-column prop="name" label="产品名称"></el-table-column>
+            <el-table-column width="150px" prop="name" label="产品名称"></el-table-column>
             <el-table-column prop="price" label="价格"></el-table-column>
-            <el-table-column prop="description" label="描述"></el-table-column>
+            <el-table-column width="200px" prop="description" label="描述"></el-table-column>
             <el-table-column prop="categoryId" label="所属栏目"></el-table-column>
-            <el-table-column label="操作">
+            <el-table-column width="150px" prop="photo" label="图片">
+                <template v-slot="slot">
+                    <img :src="slot.row.photo" style="height:100px" alt="">
+                </template>
+            </el-table-column>
+            <el-table-column label="操作"  fixed="right">
                 <template v-slot="slot">
                     <a href="" @click.prevent="toDeleteHandler(slot.row.id)">删除</a>
                     <a href="" @click.prevent="toUpdataHandler(slot.row)">修改</a>
@@ -47,13 +52,13 @@
                 <el-form-item label="介绍">
                     <el-input type="textarea" :rows="2" v-model="form.description"></el-input>
                 </el-form-item>
+                <!-- action上传地址 -->
                 <el-form-item label="产品主图">
                    <el-upload v-model="form.photo"
                         class="upload-demo"
-                        action="https://jsonplaceholder.typicode.com/posts/"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
+                        action="http://134.175.154.93:6677/file/upload"
                         :file-list="fileList"
+                        :on-success="uploadSuccessHandler"
                         list-type="picture">
                         <el-button size="small" type="primary">点击上传</el-button>
                         <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
@@ -74,13 +79,6 @@ import request from '@/utils/request'
 import querystring from 'querystring'
 export default {
     methods:{
-        //上传图片
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
-        },
-        handlePreview(file) {
-            console.log(file);
-        },
         //加载页面
         loadData(){
             let url ="http://localhost:6677/product/findAll";
@@ -111,12 +109,10 @@ export default {
                     message:response.message
                 })
             })
-            
         },
         toAddHandler(){
-            this.form={
-
-            }
+            this.fileList=[]
+            this.form={}
             this.visible=true;
         },
         closeModelHandler(){
@@ -144,6 +140,11 @@ export default {
                     });
                 })
             })
+        },
+        uploadSuccessHandler(response){
+            let photo ="http://134.175.154.93:8888/group1/"+response.data.id;
+            //将图片地址设置到form中，便于一起提交给后台
+            this.form.photo=photo;
         }
     },
     data(){
@@ -152,8 +153,8 @@ export default {
             title:"录入栏目信息",
             visible:false,
             products:[],
-            options: [],
             form:{},
+            options: [],
             value: ''
         }
     },
