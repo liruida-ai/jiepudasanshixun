@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '家政服务预约云平台',
+  title: '母婴用品购物平台',
 
   /**
    * @type {boolean} true | false
