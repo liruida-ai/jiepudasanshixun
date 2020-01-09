@@ -22,7 +22,7 @@
             <el-table-column prop="addressId" width="200" label="地址id"></el-table-column>
             <el-table-column fixed="right" label="操作">
                 <template v-slot="slot">
-                    <a href="javascript:void(0)" >详情</a>
+                    <a href=""  @click.prevent="toShowMessage(slot.row)">详情</a>
                     <a href="" v-if="slot.row.status==='待派单'"
                     @click.prevent="toSendOrderHandler(slot.row)">派单</a>
 
@@ -67,6 +67,26 @@
          </span>
         </el-dialog>
         <!--模态框-->
+        <!--显示详情-->
+         <el-dialog
+        title="显示详情"
+        :visible.sync="detail"
+        width="60%">
+        <div>
+            <p><strong>订单编号：</strong>{{form.id}}</p>
+            <p><strong>订单总价：</strong>{{form.total}}</p>
+            <p><strong>下单时间：</strong>{{form.orderTime | datefmt}}</p>
+            <p><strong>订单状态:</strong> {{form.status}}</p>
+            <p><strong>服务员工id:</strong> {{form.waiterId}}</p>
+            <p><strong>地址id:</strong> {{form.addressId}}</p>
+        </div>
+              
+        <span slot="footer" class="dialog-footer">
+            <el-button size="small" @click="closeShowMessage">关 闭</el-button>
+            
+         </span>
+        </el-dialog>
+        <!--显示详情-->
     </div>
 </template>
 
@@ -77,6 +97,13 @@ import querystring from 'querystring'
 export default {
     //用于存放网页中需要存放的方法
     methods:{
+        closeShowMessage(){
+            this.detail=false;
+        },
+        toShowMessage(row){
+            this.form=row;
+            this.detail=true;
+        },
         pageChangeHandler(page){
             this.params.page=page-1;
             this.loadData();
@@ -141,6 +168,7 @@ export default {
     data(){
         return{
             visible:false,
+            detail:false,
             orders:{},
             form:{},
             params:{
